@@ -18,6 +18,7 @@ This repository is a dumpiong ground of notes, side projects, and jupyter notebo
   - FastAI_PETS_Cat_Dog_Classifier.ipynb
   - FastAI_PETS_SimilarCats_v1.ipynb
   - FastAI_PETS_SimilarCats_CAM.ipynb
+  - PETS_Breed_Classifier.ipynb
 
 Where I'm running:
 - Google Colab
