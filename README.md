@@ -14,11 +14,18 @@ This repository is a dumpiong ground of notes, side projects, and jupyter notebo
 
 ## Jupyter Notebooks (organized by dataset):
 - PETS Dataset: (https://www.robots.ox.ac.uk/~vgg/data/pets/)
-  - FastAI_PETS_Playground.ipynb
-  - FastAI_PETS_Cat_Dog_Classifier.ipynb
-  - FastAI_PETS_SimilarCats_v1.ipynb
-  - FastAI_PETS_SimilarCats_CAM.ipynb
-  - PETS_Breed_Classifier.ipynb
+  - [PETS_Playground.ipynb](https://colab.research.google.com/github/portoforigin/deeplearn/blob/main/fastai/PETS_Playground.ipynb)
+    - Just playing around w/ PETS dataset
+  - [PETS_Learning_Rate.ipynb](https://colab.research.google.com/github/portoforigin/deeplearn/blob/main/fastai/PETS_Learning_Rate.ipynb)
+    - Expirement w/ tuning Learning Rates  
+  - [PETS_SimilarCats_v1.ipynb](https://colab.research.google.com/github/portoforigin/deeplearn/blob/main/fastai/PETS_SimilarCats_v1.ipynb)
+    - Challenge problem identifying Birman vs Ragdoll cats
+    - First attempt
+  - [PETS_SimilarCats_CAM.ipynb](https://colab.research.google.com/github/portoforigin/deeplearn/blob/main/fastai/PETS_SimilarCats_CAM.ipynb)
+    - Refined Birman vs Ragdoll cat classifier
+    - Started looking at Class Activation Maps (CAM) to understand what is going on...still don't understand...
+  - [PETS_Breed_Classifier.ipynb](https://colab.research.google.com/github/portoforigin/deeplearn/blob/main/fastai/PETS_Breed_Classifier.ipynb)
+    - Extend classifier to breed classification, work in progress
 
 Where I'm running:
 - Google Colab
