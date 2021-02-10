@@ -2,17 +2,17 @@
 
 This repository is a dumpiong ground of notes, side projects, and jupyter notebooks used to explore deep learning.
 
-AFAIK these are the main deep learning libraries:
+### AFAIK these are the main deep learning libraries:
 - Tensorflow
   - Keras: Abstracted interface built on Tensorflow
 - PyTorch
   - FastAI: Abstracted interface built on PyTorch
 - MXNET (no clue...)
 
-Things to explore:
+## Things to explore:
 - mlflow: https://mlflow.org/docs/latest/quickstart.html
 
-Jupyter Notebooks (organized by dataset):
+## Jupyter Notebooks (organized by dataset):
 - PETS Dataset: (https://www.robots.ox.ac.uk/~vgg/data/pets/)
   - FastAI_PETS_Playground.ipynb
   - FastAI_PETS_Cat_Dog_Classifier.ipynb
@@ -25,7 +25,7 @@ Where I'm running:
 - Local GPU
   - Nvidia GTX1070ti w/ 8GB Memory
 
-Links:
+## Links:
 - FastAI:
   - Course: https://course.fast.ai/videos/?lesson=1
   - Jupyter Notebooks: https://github.com/fastai/fastbook
@@ -34,5 +34,5 @@ Links:
   - FastAI Course Ch18: https://github.com/fastai/fastbook/blob/master/18_CAM.ipynb
   - CAM Applied to AstroPhysics: https://jwuphysics.github.io/blog/galaxies/astrophysics/deep%20learning/visualization/2020/08/27/image-attribution-for-galaxies.html
 
-Papers:
-- 
+## Papers:
+- TBD
