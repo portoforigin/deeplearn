@@ -14,7 +14,7 @@ import matplotlib.cm as cm
 
 import tensorflow as tf
 
-from deeplearn.keras_models import simple_shapes_model, compile_model
+from deeplearn.keras_models import simple_model, compile_model
 from deeplearn.keras_helpers import make_gradcam_heatmap, log_confusion_matrix
 
 ####################################################
@@ -30,7 +30,9 @@ class ShapeClassifier:
         self.NUM_SAVE_IMAGES = 5
 
         self.file_writer = tf.summary.create_file_writer(logdir)
-        self.tensorboard_callback = TensorBoard(log_dir=logdir)
+        self.tensorboard_callback = TensorBoard(log_dir=logdir,
+                                                histogram_freq=1,
+                                                write_images=True)
         self.cm_callback = LambdaCallback(on_epoch_end=self.gen_confusion_matrix)
 
     ####################################################
@@ -158,7 +160,7 @@ def main(args):
                         data_path=args.data_path, 
                         logdir=args.log_dir)
 
-    s.model = simple_shapes_model()
+    s.model = simple_model(input_size=(28, 28, 3), output_size=3)
     compile_model(
         s.model,
         optimizer=args.optimizer, 

@@ -24,11 +24,11 @@ def compile_model(model, optimizer, learning_rate=0.001):
 ####################################################
 # Simple Shapes Model
 ####################################################
-def simple_shapes_model():
+def simple_model(input_size, output_size):
     # Initialising the CNN
     model = Sequential()
     # Step 1 - Convolution
-    model.add(Conv2D(32, (3, 3), padding='same', input_shape = (28, 28, 3), activation = 'relu'))
+    model.add(Conv2D(32, (3, 3), padding='same', input_shape = input_size, activation = 'relu'))
     model.add(Conv2D(32, (3, 3), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.5)) # antes era 0.25
@@ -47,5 +47,5 @@ def simple_shapes_model():
     # Step 4 - Full connection
     model.add(Dense(units = 512, activation = 'relu'))
     model.add(Dropout(0.5)) 
-    model.add(Dense(units = 3, activation = 'softmax'))
+    model.add(Dense(units = output_size, activation = 'softmax'))
     return model
