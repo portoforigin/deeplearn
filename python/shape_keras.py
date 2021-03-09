@@ -1,3 +1,6 @@
+# guild run shape_keras.py epoch=[50] learning-rate=[0.1,0.01,0.001] log-dir=runs/shapes_002
+# guild tensorboard --host 0.0.0.0 --port 6006
+
 import os
 import glob
 import matplotlib
@@ -24,6 +27,7 @@ class ShapeClassifier:
         self.class_names = ["circles", "squares", "triangles"]
         self.training_set = None
         self.test_set = None
+        self.NUM_SAVE_IMAGES = 5
 
         self.file_writer = tf.summary.create_file_writer(logdir)
         self.tensorboard_callback = TensorBoard(log_dir=logdir)
@@ -86,51 +90,67 @@ class ShapeClassifier:
     ####################################################
     def eval_image(self, model):
         self.model.load_weights(self.model_file)
-        for img_path in self.print_images:
-            fname = img_path
-            img = image.load_img(img_path, target_size=(28, 28))
-            img_tensor = image.img_to_array(img)
-            img_tensor = np.expand_dims(img_tensor, axis=0)
-            img_tensor /= 255.
-            # predicting images
-            x = image.img_to_array(img)
-            x = np.expand_dims(x, axis=0)
-            images = np.vstack([x])
-            classes = self.model.predict_classes(images, batch_size=10)
-            print("Predicted class is:",classes)
+        # Use the model to predict the values from the test_images.
+        test_fname = []
+        test_images = []
+        test_labels = []
+        for img_class in self.class_names:
+            for img_fname in glob.glob(os.path.join(self.dataPath, "test/%s/*.png"%(img_class))):
+                img = image.load_img(img_fname, target_size=(28, 28))
+                img_tensor = image.img_to_array(img)
+                img_tensor = np.expand_dims(img_tensor, axis=0)
+                img_tensor /= 255.
+                test_fname.append(img_fname)
+                test_images.append(img_tensor)
+                test_labels.append(self.class_names.index(img_class))
 
-            # Using the file writer, log the reshaped image.
-            with self.file_writer.as_default():
-                tf.summary.image("Predict: %s : %s"%(fname, classes), img_tensor, step=0)
+        test_image_stack = np.vstack(test_images)
+        test_pred = self.model.predict_classes(test_image_stack)
 
-            # Generate class activation heatmap
-            last_conv_layer_name = "conv2d_5"
-            classifier_layer_names = ["flatten"]
-            heatmap = make_gradcam_heatmap(
-                img_tensor, self.model, last_conv_layer_name, classifier_layer_names
-            )
+        saved_images = 0
+        for idx in range(len(test_fname)):
+            fname = test_fname[idx]
+            prediction = test_pred[idx]
+            label = test_labels[idx]
+            # Compare prediciton to label
+            if prediction != label:
+                print("File: %s Label: %s Pred: %s" % (fname, prediction, label))
+                # Save failed images
+                if saved_images<=self.NUM_SAVE_IMAGES:
+                    img_tensor = test_images[idx]
+                    saved_images += 1
+                    # Using the file writer, log the reshaped image.
+                    with self.file_writer.as_default():
+                        tf.summary.image("Predict: %s : %s"%(fname, prediction),  img_tensor, step=0)
 
-            # We rescale heatmap to a range 0-255
-            heatmap = np.uint8(255 * heatmap)
+                    # Generate class activation heatmap
+                    last_conv_layer_name = "conv2d_5"
+                    classifier_layer_names = ["flatten"]
+                    heatmap = make_gradcam_heatmap(
+                        img_tensor, self.model, last_conv_layer_name, classifier_layer_names
+                    )
 
-            # We use jet colormap to colorize heatmap
-            jet = cm.get_cmap("jet")
+                    # We rescale heatmap to a range 0-255
+                    heatmap = np.uint8(255 * heatmap)
 
-            # We use RGB values of the colormap
-            jet_colors = jet(np.arange(256))[:, :3]
-            jet_heatmap = jet_colors[heatmap]
+                    # We use jet colormap to colorize heatmap
+                    jet = cm.get_cmap("jet")
 
-            # We create an image with RGB colorized heatmap
-            jet_heatmap = image.array_to_img(jet_heatmap)
-            jet_heatmap = jet_heatmap.resize((img_tensor.shape[1], img_tensor.shape[0]))
-            jet_heatmap = image.img_to_array(jet_heatmap)
+                    # We use RGB values of the colormap
+                    jet_colors = jet(np.arange(256))[:, :3]
+                    jet_heatmap = jet_colors[heatmap]
 
-            # Superimpose the heatmap on original image
-            superimposed_img = jet_heatmap * 0.4 + img_tensor
+                    # We create an image with RGB colorized heatmap
+                    jet_heatmap = image.array_to_img(jet_heatmap)
+                    jet_heatmap = jet_heatmap.resize((img_tensor.shape[1], img_tensor.shape[0]))
+                    jet_heatmap = image.img_to_array(jet_heatmap)
 
-            # Using the file writer, log the reshaped image.
-            with self.file_writer.as_default():
-                tf.summary.image("heatmap: %s : %s"%(fname, classes), superimposed_img, step=0)
+                    # Superimpose the heatmap on original image
+                    superimposed_img = jet_heatmap * 0.4 + img_tensor
+
+                    # Using the file writer, log the reshaped image.
+                    with self.file_writer.as_default():
+                        tf.summary.image("heatmap: %s : %s"%(fname, prediction), superimposed_img, step=0)
 
 ####################################################
 def main(args):
@@ -147,9 +167,7 @@ def main(args):
     s.load_data(args.batch_size)
     s.train(BATCH_SIZE=args.batch_size, 
             NUM_EPOCHS=args.epoch)
-    # Test Image
-    s.print_images = [os.path.join(args.data_path, 'test/circles/drawing(100).png'), 
-                     ]
+    # Test Image                     ]
     s.eval_image(s.model)
 
     
