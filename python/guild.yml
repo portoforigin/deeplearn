@@ -1,0 +1,7 @@
+train:
+  description: Learn Deeply
+  main: deeplearn
+  requires:
+    - file: deeplearn/
+
+
